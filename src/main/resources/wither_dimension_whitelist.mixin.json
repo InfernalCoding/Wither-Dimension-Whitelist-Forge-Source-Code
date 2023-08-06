@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "net.infernal_coding.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "WitherSkeletonSkullBlockMixin"
+
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "refmap": "wither_dimension_whitelist.mixin-refmap.json"
+}
