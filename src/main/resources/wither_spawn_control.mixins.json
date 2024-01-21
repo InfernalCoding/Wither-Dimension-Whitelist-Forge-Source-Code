@@ -1,0 +1,13 @@
+{
+  "minVersion": "0.8",
+  "required": true,
+  "compatibilityLevel": "JAVA_16",
+  "refmap": "wither_spawn_control.mixins.refmap.json",
+  "package": "net.infernal_coding.wither_spawn_control.mixins",
+  "mixins": [
+    "WitherSkeletonSkullBlockMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
