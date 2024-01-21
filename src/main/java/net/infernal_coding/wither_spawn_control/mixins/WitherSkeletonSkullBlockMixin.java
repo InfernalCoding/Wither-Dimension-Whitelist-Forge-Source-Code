@@ -2,9 +2,9 @@ package net.infernal_coding.wither_spawn_control.mixins;
 
 import com.google.common.collect.Lists;
 import net.infernal_coding.wither_spawn_control.Config;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -47,10 +47,10 @@ public class WitherSkeletonSkullBlockMixin {
         if (Config.SHOW_DIMENSIONS_TO_PLAYER.get()) {
 
             if (Config.WITHER_SPAWNABLE_DIMENSIONS.get().isEmpty()) {
-                dimensionList = new StringBuilder(new TranslatableComponent("text.wither_spawn_control.cannot_spawn_wither_anywhere").getString());
+                dimensionList = new StringBuilder(I18n.get("text.wither_spawn_control.cannot_spawn_wither_anywhere"));
             } else {
 
-                dimensionList = new StringBuilder(new TranslatableComponent("text.wither_spawn_control.cannot_spawn_wither_here_with_dimensions").getString());
+                dimensionList = new StringBuilder(I18n.get("text.wither_spawn_control.cannot_spawn_wither_here_with_dimensions"));
 
                 int i = 0;
 
@@ -71,18 +71,18 @@ public class WitherSkeletonSkullBlockMixin {
                 }
             }
         } else {
-            dimensionList = new StringBuilder(new TranslatableComponent("text.wither_spawn_control.cannot_spawn_wither_here").getString());
+            dimensionList = new StringBuilder(I18n.get("text.wither_spawn_control.cannot_spawn_wither_here"));
         }
 
         for (Player player : players) {
-            player.displayClientMessage(new TextComponent(dimensionList.toString()), true);
+            player.displayClientMessage(Component.literal(dimensionList.toString()), true);
         }
         return null;
     }
 
     private static String getFormattedDimensionName(String dimension) {
-        String dimensionName = new ResourceLocation(dimension).getPath();
-        String[] parts = dimensionName.split("_");
+        StringBuilder dimensionName = new StringBuilder(new ResourceLocation(dimension).getPath());
+        String[] parts = dimensionName.toString().split("_");
 
         //If the dimensionName can be represented as an array split by "_", add "the" to the first index of the array if not in the String. Then, create
         //an uppercase dimension name from the array
@@ -98,18 +98,18 @@ public class WitherSkeletonSkullBlockMixin {
                 int i = 0;
             for (String part : parts) {
                 if (i == 0) {
-                    dimensionName = part + " ";
+                    dimensionName = new StringBuilder(part + " ");
                 } else {
                     try {
                         if (i + 1 == parts.length) {
-                            dimensionName += part.substring(0, 1).toUpperCase() + part.substring(1);
+                            dimensionName.append(part.substring(0, 1).toUpperCase()).append(part.substring(1));
                         } else
-                            dimensionName += part.substring(0, 1).toUpperCase() + part.substring(1) + " ";
+                            dimensionName.append(part.substring(0, 1).toUpperCase()).append(part.substring(1)).append(" ");
                     } catch (Exception e) {
                         if (i + 1 == parts.length) {
-                            dimensionName += part.substring(0, 1).toUpperCase();
+                            dimensionName.append(part.substring(0, 1).toUpperCase());
                         }
-                        dimensionName += part.substring(0, 1).toUpperCase() + " ";
+                        dimensionName.append(part.substring(0, 1).toUpperCase()).append(" ");
                     }
                 }
                 i++;
@@ -118,23 +118,23 @@ public class WitherSkeletonSkullBlockMixin {
             //If the dimensionName can't be represented as an array split by "_", add "the" to the String if not at the start. Then, create
             //an uppercase dimension name from the String
         } else {
-            if (!dimensionName.startsWith("the")) {
+            if (!dimensionName.toString().startsWith("the")) {
                 try {
-                    dimensionName = "the " + dimensionName.substring(0, 1).toUpperCase() + dimensionName.substring(1);
+                    dimensionName = new StringBuilder("the " + dimensionName.substring(0, 1).toUpperCase() + dimensionName.substring(1));
                 } catch (Exception e) {
-                    dimensionName = "the " + dimensionName.substring(0, 1).toUpperCase();
+                    dimensionName = new StringBuilder("the " + dimensionName.substring(0, 1).toUpperCase());
                 }
             }
         }
-        return dimensionName;
+        return dimensionName.toString();
     }
 
     private static List<Player> getNearbyPlayers(Level world, AABB bb) {
         List<Player> list = Lists.newArrayList();
 
-        for (Player playerentity : world.players()) {
-            if (bb.contains(playerentity.getX(), playerentity.getY(), playerentity.getZ())) {
-                list.add(playerentity);
+        for (Player player : world.players()) {
+            if (bb.contains(player.getX(), player.getY(), player.getZ())) {
+                list.add(player);
             }
         }
         return list;
